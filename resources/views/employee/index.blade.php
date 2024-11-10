@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI HQ Corp</title>
+    <title>AI HQ Corp - Dashboard</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
@@ -19,121 +19,88 @@
         }
 
         body {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
-            background-blend-mode: multiply,multiply;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
+            background-color: #f8f9fa;
+        }
+        tbody{
+            color: white;
         }
 
-        .main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 91.5vh;
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            background: rgb(17 24 39);
+            min-height: 100vh;
         }
 
-        .employee-container {
-            height: 90%;
-            width: 90%;
-            border-radius: 20px;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .employee-container > div {
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        /* Dashboard card styles */
+        .dashboard-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            padding: 30px;
-            height: 100%;
+            padding: 20px;
+            background-color: rgb(31 41 55);
+            color: #fff;
         }
 
-        .title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Table styling */
+        table.dataTable thead {
+            background-color: rgb(31 41 55);
+            color: #fff;
         }
 
-        table.dataTable thead > tr > th.sorting, table.dataTable thead > tr > th.sorting_asc, table.dataTable thead > tr > th.sorting_desc, table.dataTable thead > tr > th.sorting_asc_disabled, table.dataTable thead > tr > th.sorting_desc_disabled, table.dataTable thead > tr > td.sorting, table.dataTable thead > tr > td.sorting_asc, table.dataTable thead > tr > td.sorting_desc, table.dataTable thead > tr > td.sorting_asc_disabled, table.dataTable thead > tr > td.sorting_desc_disabled {
-            text-align: center;
+        .btn-qr, .btn-edit, .btn-delete {
+            margin: 0 5px;
         }
+        button.btn.btn-dark {
+            background-color: #FFF;
+            color: rgb(17 24 39);
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+    border: 1px solid #fff;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: rgb(31 41 55);
+    color: inherit;
+    padding: 4px;
+}
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand ml-4" href="#">AI HQ Corp Attendance System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <!-- Sidebar -->
+     <!-- Sidebar Include -->
+     @include('layouts.sidebar')
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                
-            </ul>
-            <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                    <a class="nav-link" href="{{ route('attendance.index') }}">Take Attendance</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ route('employees.index') }}">AI HQ Corp Employees</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="main">
-        <div class="employee-container">
-            <div class="employee-list">
-                <div class="title">
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="dashboard-card">
+                <div class="d-flex justify-content-between align-items-center">
                     <h4>List of Employees</h4>
-                    <button class="btn btn-dark" data-toggle="modal" data-target="#addemployeeModal">Add employee</button>
+                    <button class="btn btn-dark" data-toggle="modal" data-target="#addemployeeModal">Add Employee</button>
                 </div>
                 <hr>
-                <div class="table-container table-responsive">
-                    <table class="table text-center table-sm" id="employeeTable">
-                        <thead class="thead-dark">
+                <div class="table-responsive">
+                    <table class="table table-striped text-center" id="employeeTable">
+                        <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Department</th>
-                                <th scope="col">Action</th>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($employees as $employee)
                                 <tr>
-                                    <th scope="row">{{ $loop->iteration }}</th>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $employee->employee_name }}</td>
                                     <td>{{ $employee->department }}</td>
                                     <td>
-                                        <div class="action-button">
-                                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#qrCodeModal{{ $employee->tbl_employee_id }}">
-                                                <img src="https://cdn-icons-png.flaticon.com/512/1341/1341632.png" alt="" width="16">
-                                            </button>
-
-                                            <!-- QR Modal -->
-                                            <div class="modal fade" id="qrCodeModal{{ $employee->tbl_employee_id }}" tabindex="-1" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">{{ $employee->employee_name }}'s QR Code</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body text-center">
-                                                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $employee->generated_code }}" alt="" width="300">
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <button class="btn btn-secondary btn-sm" onclick="updateemployee({{ $employee->tbl_employee_id }})">&#128393;</button>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteemployee({{ $employee->tbl_employee_id }})">&#10006;</button>
-                                        </div>
+                                        <button class="btn btn-success btn-sm btn-qr" data-toggle="modal" data-target="#qrCodeModal{{ $employee->tbl_employee_id }}">
+                                            QR
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm btn-edit" onclick="updateemployee({{ $employee->tbl_employee_id }})">Edit</button>
+                                        <button class="btn btn-danger btn-sm btn-delete" onclick="deleteemployee({{ $employee->tbl_employee_id }})">Delete</button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -169,7 +136,7 @@
 
                         <div class="qr-con text-center" style="display: none;">
                             <input type="hidden" class="form-control" id="generatedCode" name="generated_code">
-                            <p>Take a pic with your qr code.</p>
+                            <p>Take a pic with your QR code.</p>
                             <img class="mb-4" src="" id="qrImg" alt="">
                         </div>
                         <div class="modal-footer modal-close" style="display: none;">
@@ -182,41 +149,66 @@
         </div>
     </div>
 
-    <!-- Update Modal -->
-    <div class="modal fade" id="updateemployeeModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="updateemployee" aria-hidden="true">
+<!-- Update Employee Modal -->
+<div class="modal fade" id="updateemployeeModal" tabindex="-1" aria-labelledby="updateemployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateemployeeModalLabel">Edit Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="updateForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="updateEmployeeName">Name</label>
+                        <input type="text" class="form-control" id="updateEmployeeName" name="employee_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEmployeeCourse">Department</label>
+                        <input type="text" class="form-control" id="updateEmployeeCourse" name="department" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- QR Code Modal Template -->
+    @foreach ($employees as $employee)
+    <div class="modal fade" id="qrCodeModal{{ $employee->tbl_employee_id }}" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateemployee">Update employee</h5>
+                    <h5 class="modal-title">QR Code for {{ $employee->employee_name }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form id="updateForm" method="POST">
-                        @csrf
-                        @method('PUT')
-                        <div class="form-group">
-                            <label for="updateEmployeeName">Full Name:</label>
-                            <input type="text" class="form-control" id="updateEmployeeName" name="employee_name">
-                        </div>
-                        <div class="form-group">
-                            <label for="updateEmployeeCourse">Department:</label>
-                            <input type="text" class="form-control" id="updateEmployeeCourse" name="department">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-dark">Update List</button>
-                        </div>
-                    </form>
+                <div class="modal-body text-center">
+                    <img id="qrImg{{ $employee->tbl_employee_id }}" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ $employee->employee_name }}-{{ $employee->department }}" alt="QR Code">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+    @endforeach
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.8/dist/sweetalert2.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#employeeTable').DataTable();
@@ -238,46 +230,43 @@
         }
 
         function updateemployee(id) {
-        $.ajax({
-            url: '/employees/' + id + '/edit', // Change this to the correct route
-            type: 'GET',
-            success: function(data) {
-                $('#updateEmployeeName').val(data.employee_name);
-                $('#updateEmployeeCourse').val(data.department);
-                $('#updateForm').attr('action', '/employees/' + id); // Change to employees route
-                $('#updateemployeeModal').modal('show');
-            },
-            error: function(xhr) {
-                alert('Error fetching employee data. Please try again.');
-            }
-        });
-    }
-
-
-    function deleteemployee(id) {
-    if (confirm('Are you sure you want to delete this employee?')) {
-        $.ajax({
-            url: '/employees/' + id,
-            type: 'DELETE',
-            data: {
-                '_token': '{{ csrf_token() }}',
-            },
-            success: function(response) {
-                if (response.success) {
-                    alert(response.message); // Show success message
-                    location.reload(); // Reload the page on success
-                } else {
-                    alert('Error deleting employee. Please try again.');
+            $.ajax({
+                url: '/employees/' + id + '/edit',
+                type: 'GET',
+                success: function(data) {
+                    $('#updateEmployeeName').val(data.employee_name);
+                    $('#updateEmployeeCourse').val(data.department);
+                    $('#updateForm').attr('action', '/employees/' + id);
+                    $('#updateemployeeModal').modal('show');
+                },
+                error: function() {
+                    alert('Error fetching employee data. Please try again.');
                 }
-            },
-            error: function(xhr) {
-                alert('Error deleting employee. Please try again.');
+            });
+        }
+
+        function deleteemployee(id) {
+            if (confirm('Are you sure you want to delete this employee?')) {
+                $.ajax({
+                    url: '/employees/' + id,
+                    type: 'DELETE',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert('Error deleting employee. Please try again.');
+                        }
+                    },
+                    error: function() {
+                        alert('Error deleting employee. Please try again.');
+                    }
+                });
             }
-        });
-    }
-}
-
-
+        }
     </script>
 </body>
 </html>

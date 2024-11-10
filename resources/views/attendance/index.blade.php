@@ -1,186 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
     <title>AI HQ Corp</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
 
-        * {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
-            background-blend-mode: multiply,multiply;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        .pagination .page-link {
-    color: #333; /* Text color */
-    background-color: #f8f9fa; /* Light background for pagination items */
-    border: 1px solid #dee2e6; /* Border for pagination items */
-    margin: 0 4px;
-    transition: all 0.3s ease;
-}
-
-.pagination .page-link:hover {
-    color: #fff;
-    background-color: #007bff; /* Bootstrap blue for hover */
-}
-
-.pagination .active .page-link {
-    background-color: #007bff; /* Active page background */
-    color: #fff;
-    border-color: #007bff;
-}
+    <!-- script
+    ================================================== -->
+    <script src="{{ asset('js/modernizr.js') }}"></script>
+    <script defer src="{{ asset('js/fontawesome/all.min.js') }}"></script>
 
 
-        .main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 91.5vh;
-        }
-
-        .attendance-container {
-            height: 90%;
-            width: 90%;
-            border-radius: 20px;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .attendance-container > div {
-            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-            border-radius: 10px;
-            padding: 30px;
-        }
-
-        .attendance-container > div:last-child {
-            width: 64%;
-            margin-left: auto;
-        }
-    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand ml-4" href="#">AI HQ Corp Attendance System</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                
-            </ul>
-            <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('attendance.index') }}">Take Attendance</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('employees.index') }}">AI HQ Corp Employees</a>
-                </li>
-            </ul>
+<body id="top">
+
+    <div id="preloader">
+        <div id="loader" class="dots-fade">
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-    </nav>
+    </div>
 
-    <div class="main">
-        <div class="attendance-container row">
-            <div class="qr-container col-4">
-                <div class="scanner-con">
-                    <h5 class="text-center">Scan QR Code here for attendance</h5>
-                    <video id="interactive" class="viewport" width="100%"></video>
-                </div>
+    <header class="s-header">
 
-                <div class="qr-detected-container" style="display: none;">
-                    <form action="{{ route('attendance.store') }}" method="POST">
-                        @csrf
-                        <h4 class="text-center">Employee QR Detected!</h4>
-                        <input type="hidden" id="detected-qr-code" name="qr_code">
-                        <button type="submit" class="btn btn-dark form-control">Submit Attendance</button>
-                    </form>
-                </div>
-            </div>
+        <div class="s-header__content">
+    
+            <nav class="s-header__nav-wrap">
+                <ul class="s-header__nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('attendance.index') }}">Attendance</a>
+                    </li>
 
-            <div class="attendance-list col-8">
-    <h4>Filter Date</h4>
-    <!-- Date Filter Form -->
-    <form method="GET" action="{{ route('attendance.index') }}" class="mb-3">
-        <div class="form-row">
-            <div class="form-group col-md-4">
-                <input type="date" class="form-control" id="attendance-date" name="date" value="{{ request()->get('date') }}" placeholder="Filter by Date">
-            </div>
-            <div class="form-group col-md-4 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">Filter</button>
-            </div>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#attendance">Present Employees</a>
+                    </li>
+                </ul>
+            </nav> 
+
+            <a href="{{ route('login') }}" class="btn btn--primary btn--small">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22c-5.523 0-10-4.477-10-10S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-15v5H7l5 5 5-5h-4V7h-3z"/>
+                </svg>
+                Login
+            </a>
+            
+            
+
+        </div> 
+
+        <a class="s-header__menu-toggle" href="#0"><span>Menu</span></a>
+
+    </header> 
+
+    <section id="hero" class="s-hero target-section">
+
+        <div class="s-hero__bg">
+            <div class="gradient-overlay"></div>
         </div>
-    </form>
 
-    <!-- Dynamic title for the list -->
-    <h4 id="attendance-title">
-        List of Present Employees <span id="selected-date-text"></span>
-    </h4>
+        <div class="hero_content">
 
-    <!-- Attendance table -->
-    <div class="table-container table-responsive">
-        <table class="table text-center table-sm" id="attendanceTable">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Department</th>
-                    <th scope="col">Time In</th>
-                    <th scope="col">Time Out</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach ($attendances as $attendance)
-                <tr>
-                    <td>{{ $attendance->employee->employee_name }}</td>
-                    <td>{{ $attendance->employee->department }}</td>
-                    <td>
-                        @if ($attendance->time_in)
-                            {{ \Carbon\Carbon::parse($attendance->time_in)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}
-                        @endif
-                    </td>
-                    <td>
-                        @if ($attendance->time_out)
-                            {{ \Carbon\Carbon::parse($attendance->time_out)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}
-                        @else
-                            Not Yet Clocked Out
-                        @endif
-                    </td>
-                    <td>
-                        <div class="action-button">
-                            <button class="btn btn-danger delete-button" onclick="deleteAttendance({{ $attendance->tbl_attendance_id }})">X</button>
+        <div class="row s-hero__content">
+            <div class="column">
+
+                <div class="attendance-container row">
+                    <div class="qr-container">
+                        <div class="scanner-con">
+                            <h5 class="text-center">Scan QR Code here for attendance</h5>
+                            <video id="interactive" class="viewport" width="100%"></video>
                         </div>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            {{ $attendances->appends(request()->query())->links('pagination::bootstrap-4') }}
-        </nav>
-    </div>
-</div>
-
+        
+                        <div class="qr-detected-container" style="display: none;">
+                            <form action="{{ route('attendance.store') }}" method="POST">
+                                @csrf
+                                <h4 class="text-center">Employee QR Detected!</h4>
+                                <input type="hidden" id="detected-qr-code" name="qr_code">
+                                <button type="submit" class="btn btn-dark form-control">Submit Attendance</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="s-hero__video">
+            <a class="s-hero__video-link" href="https://player.vimeo.com/video/117310401?color=01aef0&amp;title=0&amp;byline=0&amp;portrait=0" data-lity="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M21 12l-18 12v-24z"/></svg>
+                <span class="s-hero__video-text">Play Video</span>
+            </a>
+        </div>
+
     </div>
+
+    </section> <!-- end s-hero -->
+
+    <section id="attendance">
+        <h4 id="attendance-title">
+            List of Present Employees <span id="selected-date-text"></span>
+        </h4>
+    
+        <!-- Attendance table -->
+        <div class="table-container table-responsive">
+            <table class="table text-center table-sm" id="attendanceTable">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Time In</th>
+                        <th scope="col">Time Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach ($attendances as $attendance)
+                    <tr>
+                        <td>{{ $attendance->employee->employee_name }}</td>
+                        <td>{{ $attendance->employee->department }}</td>
+                        <td>
+                            @if ($attendance->time_in)
+                                {{ \Carbon\Carbon::parse($attendance->time_in)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}
+                            @endif
+                        </td>
+                        <td>
+                            @if ($attendance->time_out)
+                                {{ \Carbon\Carbon::parse($attendance->time_out)->timezone('Asia/Manila')->format('l, F j, Y g:i A') }}
+                            @else
+                                Not Yet Clocked Out
+                            @endif
+                        </td>
+                       
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </section>
+
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -245,5 +215,11 @@
             }
         }
     </script>
+
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('js/plugins.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+
+
 </body>
 </html>

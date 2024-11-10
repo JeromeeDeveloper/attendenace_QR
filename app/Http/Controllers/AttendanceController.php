@@ -35,6 +35,30 @@ class AttendanceController extends Controller
         return view('attendance.index', compact('attendances'));
     }
 
+    public function employeeAttendance(Request $request)
+    {
+        $query = Attendance::with('employee');
+
+        // Date filter: Filter attendances where either time_in or time_out matches the specified date
+        if ($request->has('date')) {
+            $query->whereDate('time_in', $request->date)
+                ->orWhereDate('time_out', $request->date);
+        }
+
+        // Search filter: Filter attendances by employee name
+        // if ($request->has('search')) {
+        //     $search = $request->get('search');
+        //     $query->whereHas('employee', function ($q) use ($search) {
+        //         $q->where('employee_name', 'like', '%' . $search . '%');
+        //     });
+        // }
+
+        // Paginate the results with 10 entries per page
+        $attendances = $query->paginate(9);
+
+        // Return the employee attendance view
+        return view('employee.attendance_employee', compact('attendances'));
+    }
     
     
 
